@@ -45,10 +45,13 @@
             .add("apple.png")
             .add("grass_field.png")
             .add("explosion.png")
+            .add("../helper_images/doom_set.png")
+            .add("../helper_images/wood_set.png")
             .load(setup)
 
         let fennekin, grassField, mainScene, animated_sprite, field_elems, fires, fire_speed,
-            healthBar, pokeballs, last_time_hit, explosionFrames, pokeballsToAdd, speed, direction;
+            healthBar, pokeballs, last_time_hit, explosionFrames, pokeballsToAdd, speed, direction,
+            rocks, woods, rockFrames, woodFrames, rocksCount, woodsCount;
 
         function setup() {
 
@@ -86,6 +89,53 @@
                         new Rectangle(i * 32, j * 32, 32, 32));
                     explosionFrames.push(texture);
                 }
+            }
+
+            rocks = [];
+            rockFrames = [];
+            let rockTexture = resources["../helper_images/doom_set.png"].texture;
+            for (let i = 0; i < 4; i++) {
+                var texture = new PIXI.Texture(rockTexture,
+                    new Rectangle(i * 32, 0, 32, 32));
+                rockFrames.push(texture);
+            }
+
+            let numOfXSections = Math.floor(app.stage.width / 32),
+                numOfYSections = Math.floor(app.stage.height / 32);
+
+            rocksCount = 75;
+            for (let i = 0; i < rocksCount; i++) {
+
+                let rock = new AnimatedSprite(rockFrames);
+                let randomXSection = randomInt(0, 63);
+                let randomYSection = randomInt(0, 63);
+                let rockX = randomXSection * 32;
+                let rockY = randomYSection * 32;
+
+                if (distance(rockX, rockY, fennekin.x, fennekin.y) < Math.sqrt(32 * 32 + 32 * 32)) {
+                    if (rockX - 32 > 0 & rockY - 32 > 0) {
+                        rockX -= 32;
+                        rockY -= 32;
+                    } else {
+                        rockX += 32;
+                        rockY += 32;
+                    }
+                }
+
+                rock.x = rockX;
+                rock.y = rockY;
+                rock.hitCounter = 0;
+                mainScene.addChild(rock);
+                rocks.push(rock);
+            }
+
+            woods = [];
+            woodFrames = [];
+            let woodTexture = resources["../helper_images/wood_set.png"].texture;
+            for (let i = 0; i < 3; i++) {
+                var texture = new PIXI.Texture(woodTexture,
+                    new Rectangle(i * 32, 0, 32, 32));
+                woodFrames.push(texture);
             }
 
             //explosion = new AnimatedSprite(explosionFrames);
@@ -128,7 +178,7 @@
                 mainScene.addChild(pokeball);
             }
 
-            pokeballsToAdd = 2;
+            pokeballsToAdd = 1;
 
             let left = keyboard(37),
                 up = keyboard(38),
@@ -208,26 +258,20 @@
                 pokeball.x += pokeball.vx;
                 pokeball.y += pokeball.vy;
 
-                b.contain(pokeball, { x: 32, y: 16, width: 2033, height: 2049 }, true);
+                b.contain(pokeball, { x: 32, y: 16, width: 2033, height: 2048 }, true);
             });
 
             let firesForRemoval = [];
 
-            console.log(fires.length);
             for (let i = 0; i < fires.length; i++) {
                 fires[i].position.x += Math.cos(fires[i].rotation) * fire_speed;
                 fires[i].position.y += Math.sin(fires[i].rotation) * fire_speed;
 
-                if(fires[i].position.y < 0) {
+                if (fires[i].position.y < 0 || fires[i].position.x < 0 ||
+                    fires[i].position.y > app.stage.height || fires[i].position.x > app.stage.width) {
                     firesForRemoval.push(i);
                 }
             }
-
-            firesForRemoval.forEach(fire => {
-                mainScene.removeChild(fires[fire]);
-                fires.splice(fire, 1);
-            });
-
 
             let isFennekinHit = false;
             let hittedPokeballsIndexes = [];
@@ -244,9 +288,14 @@
 
                 for (let f = 0; f < fires.length; f++) {
                     if (b.hitTestCircleRectangle(pokeballs[i], fires[f])) {
+                        firesForRemoval.push(f);
                         hittedPokeballsIndexes.push(i);
 
                     }
+                }
+
+                for (let r = 0; r < rocks.length; r++) {
+                    b.circleRectangleCollision(pokeballs[i], rocks[r], true);
                 }
             }
 
@@ -262,7 +311,7 @@
                 mainScene.removeChild(pokeballs[pokeballIndex]);
                 pokeballs.splice(pokeballIndex, 1);
 
-                if(pokeballs.length > 25) return;
+                //if (pokeballs.length > 25) return;
 
                 for (let i = 0; i < pokeballsToAdd; i++) {
                     var pokeball = new Sprite(field_elems["pokeball_pink_32x32.png"]);
@@ -294,6 +343,50 @@
                 last_time_hit = Math.floor(Date.now() / 1000);
                 charm.update();
             }
+
+            for (let i = 0; i < rocks.length; i++) {
+                b.rectangleCollision(fennekin, rocks[i]);
+                //fennekin will be able to move the rocks if:
+                //b.rectangleCollision(rocks[i], fennekin);
+            }
+
+            let rocksForRemoval = [];
+
+            for (let f = 0; f < fires.length; f++) {
+                for (let r = 0; r < rocks.length; r++) {
+
+                    if (b.rectangleCollision(fires[f], rocks[r])) {
+                        firesForRemoval.push(f);
+                        if (!rocks[r].hitCounter) {
+                            rocks[r].gotoAndStop(++rocks[r].hitCounter);
+                        } else if (rocks[r].hitCounter == 1 || rocks[r].hitCounter == 2) {
+                            rocks[r].gotoAndStop(++rocks[r].hitCounter);
+                        } else {
+                            let explosion = new AnimatedSprite(explosionFrames);
+                            explosion.x = rocks[r].x;
+                            explosion.y = rocks[r].y;
+                            explosion.animationSpeed = 0.5;
+                            explosion.loop = false;
+                            explosion.play();
+                            mainScene.addChild(explosion);
+                            rocksForRemoval.push(r);
+                        }
+                    }
+                }
+            }
+
+            firesForRemoval.forEach(fire => {
+                mainScene.removeChild(fires[fire]);
+                fires.splice(fire, 1);
+            });
+
+
+
+            rocksForRemoval.forEach(index => {
+                mainScene.removeChild(rocks[index]);
+                rocks.splice(index, 1);
+            });
+
 
             mainScene.pivot.x = fennekin.position.x;
             mainScene.pivot.y = fennekin.position.y;
@@ -371,6 +464,10 @@
                 fennekin.gotoAndStop(2);
             }
             return angle;
+        }
+
+        function distance(ax, ay, bx, by) {
+            return Math.sqrt(Math.pow(bx - ax, 2) + Math.pow(by - ay, 2));
         }
 
     </script>
