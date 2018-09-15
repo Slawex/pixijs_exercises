@@ -1,0 +1,92 @@
+{"frames": {
+
+"apple.png":
+{
+	"frame": {"x":0,"y":0,"w":26,"h":27},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":26,"h":27},
+	"sourceSize": {"w":26,"h":27}
+},
+"fennekin_down.png":
+{
+	"frame": {"x":0,"y":27,"w":32,"h":34},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":34},
+	"sourceSize": {"w":32,"h":34}
+},
+"fennekin_left.png":
+{
+	"frame": {"x":0,"y":61,"w":32,"h":34},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":34},
+	"sourceSize": {"w":32,"h":34}
+},
+"fennekin_right.png":
+{
+	"frame": {"x":0,"y":95,"w":32,"h":34},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":34},
+	"sourceSize": {"w":32,"h":34}
+},
+"fennekin_up.png":
+{
+	"frame": {"x":0,"y":129,"w":32,"h":34},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":34},
+	"sourceSize": {"w":32,"h":34}
+},
+"fire_down.png":
+{
+	"frame": {"x":0,"y":163,"w":17,"h":26},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":17,"h":26},
+	"sourceSize": {"w":17,"h":26}
+},
+"fire_left.png":
+{
+	"frame": {"x":0,"y":189,"w":26,"h":17},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":26,"h":17},
+	"sourceSize": {"w":26,"h":17}
+},
+"fire_right.png":
+{
+	"frame": {"x":0,"y":206,"w":26,"h":17},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":26,"h":17},
+	"sourceSize": {"w":26,"h":17}
+},
+"fire_up.png":
+{
+	"frame": {"x":0,"y":223,"w":17,"h":26},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":17,"h":26},
+	"sourceSize": {"w":17,"h":26}
+},
+"pokeball_pink_32x32.png":
+{
+	"frame": {"x":0,"y":249,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "field_elems.png",
+	"format": "RGBA8888",
+	"size": {"w":32,"h":281},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:9b037d5cee8ced5fe60ca1b69fdbc570:d635fd16f6a8f5abfcb0f7d1d33a3826:a7ee1095569ae60ba36e23f87d265334$"
+}
+}

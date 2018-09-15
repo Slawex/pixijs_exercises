@@ -1,0 +1,44 @@
+{"frames": {
+
+"apple.png":
+{
+	"frame": {"x":0,"y":0,"w":26,"h":27},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":26,"h":27},
+	"sourceSize": {"w":26,"h":27}
+},
+"dungeon.png":
+{
+	"frame": {"x":26,"y":0,"w":1024,"h":256},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":1024,"h":256},
+	"sourceSize": {"w":1024,"h":256}
+},
+"fennekin.png":
+{
+	"frame": {"x":1050,"y":0,"w":32,"h":34},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":34},
+	"sourceSize": {"w":32,"h":34}
+},
+"pokeball_pink_32x32.png":
+{
+	"frame": {"x":1082,"y":0,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "fennekin_dungeon.png",
+	"format": "RGBA8888",
+	"size": {"w":1114,"h":256},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:2cf71ebf238f7e7ce6b7ba8ef9013bf6:52f8317e7e775f65dc66b3505c62177a:4383b705f6af8e1ff647043cc4e8eae4$"
+}
+}
