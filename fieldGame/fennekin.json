@@ -1,0 +1,28 @@
+{"frames": {
+
+"fennekin.png":
+{
+	"frame": {"x":0,"y":0,"w":32,"h":34},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":34},
+	"sourceSize": {"w":32,"h":34}
+},
+"fennekin_l.png":
+{
+	"frame": {"x":0,"y":34,"w":32,"h":34},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":34},
+	"sourceSize": {"w":32,"h":34}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "fennekin.png",
+	"format": "RGBA8888",
+	"size": {"w":32,"h":68},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:333b87333d392f580a417e118a52a2cb:8f265b31944d2111b927f5c9a2107705:9b5901e3747dbd5ef02d906ab40baa2f$"
+}
+}
