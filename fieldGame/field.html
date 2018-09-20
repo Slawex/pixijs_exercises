@@ -42,7 +42,6 @@
 
         loader
             .add("field_elems.json")
-            .add("apple.png")
             .add("grass_field.png")
             .add("explosion.png")
             .add("../helper_images/doom_set.png")
@@ -253,6 +252,7 @@
             healthBar.y += fennekin.vy;
 
             b.contain(fennekin, { x: 32, y: 34, width: 2033, height: 2032 });
+            b.contain(healthBar, {x: 37, y: 4, width: 2033, height: 2032 });
 
             pokeballs.forEach(function (pokeball) {
                 pokeball.x += pokeball.vx;
@@ -320,7 +320,6 @@
                     pokeball.circular = true;
                     pokeball.vx = speed * direction;
                     pokeball.vy = speed * direction;
-                    console.log(speed);
                     direction *= -1;
                     pokeballs.push(pokeball);
                     mainScene.addChild(pokeball);
@@ -355,7 +354,7 @@
             for (let f = 0; f < fires.length; f++) {
                 for (let r = 0; r < rocks.length; r++) {
 
-                    if (b.rectangleCollision(fires[f], rocks[r])) {
+                    if (b.hitTestRectangle(fires[f], rocks[r])) {
                         firesForRemoval.push(f);
                         if (!rocks[r].hitCounter) {
                             rocks[r].gotoAndStop(++rocks[r].hitCounter);
@@ -444,6 +443,7 @@
                 app.renderer.plugins.interaction.mouse.global.y);
             fire.position.x = fennekin.position.x + Math.cos(rotation) * 5;
             fire.position.y = fennekin.position.y + Math.sin(rotation) * 5;
+            fire.anchor.set(0.5, 0.5);
             fire.rotation = rotation;
             mainScene.addChild(fire);
             fires.push(fire);
