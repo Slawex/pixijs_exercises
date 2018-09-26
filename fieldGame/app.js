@@ -46,8 +46,8 @@ function setup() {
     field_elems = resources["field_elems.json"].textures;
 
     fennekin = new Character("fennekin",
-        { x: randomInt(0, app.stage.width - 32), y: randomInt(0, app.stage.height - 34)},
-        field_elems);
+        { x: randomInt(0, app.stage.width - 32), y: randomInt(0, app.stage.height - 34) },
+        field_elems, mainScene, app);
     mainScene.addChild(fennekin.animatedSprite);
 
     explosionFrames = [];
@@ -81,7 +81,7 @@ function setup() {
         let rockX = randomXSection * 32;
         let rockY = randomYSection * 32;
 
-        if (distance(rockX, rockY, fennekin.x, fennekin.y) < Math.sqrt(32 * 32 + 32 * 32)) {
+        if (distance(rockX, rockY, fennekin.animatedSprite.x, fennekin.animatedSprite.y) < Math.sqrt(32 * 32 + 32 * 32)) {
             if (rockX - 32 > 0 & rockY - 32 > 0) {
                 rockX -= 32;
                 rockY -= 32;
@@ -110,7 +110,7 @@ function setup() {
     //explosion = new AnimatedSprite(explosionFrames);
 
     healthBar = new Container();
-    healthBar.position.set(fennekin.x - fennekin.width / 2, fennekin.y - 20);
+    healthBar.position.set(fennekin.animatedSprite.x - fennekin.width / 2, fennekin.animatedSprite.y - 20);
     mainScene.addChild(healthBar);
 
     let innerBar = new Graphics();
@@ -200,10 +200,12 @@ function setup() {
     };
 
     fires = [];
-    fire_speed = 5;
 
     window.addEventListener("mousedown", function (event) {
-        shoot(event);
+        let fireBullet = fennekin.shoot();
+        mainScene.addChild(fireBullet.sprite);
+        fires.push(fireBullet);
+        //shoot(event);
     });
 
     state = play;
@@ -217,10 +219,6 @@ function gameLoop(delta) {
 function play(delta) {
 
     fennekin.changePositionBy(fennekin.vx, fennekin.vy);
-    // fennekin.x += fennekin.vx;
-    // fennekin.y += fennekin.vy;
-    // healthBar.x += fennekin.vx;
-    // healthBar.y += fennekin.vy;
 
     b.contain(fennekin.animatedSprite, { x: 32, y: 34, width: 2033, height: 2032 });
 
@@ -234,11 +232,13 @@ function play(delta) {
     let firesForRemoval = [];
 
     for (let i = 0; i < fires.length; i++) {
-        fires[i].position.x += Math.cos(fires[i].rotation) * fire_speed;
-        fires[i].position.y += Math.sin(fires[i].rotation) * fire_speed;
+        fires[i].changePositionBy(Math.cos(fires[i].rotation) * fires[i].fireSpeed,
+            Math.sin(fires[i].rotation) * fires[i].fireSpeed);
+        // fires[i].position.x += Math.cos(fires[i].rotation) * fires[i].fireSpeed;
+        // fires[i].position.y += Math.sin(fires[i].rotation) * fires[i].fireSpeed;
 
-        if (fires[i].position.y < 0 || fires[i].position.x < 0 ||
-            fires[i].position.y > app.stage.height || fires[i].position.x > app.stage.width) {
+        if (fires[i].sprite.y < 0 || fires[i].sprite.x < 0 ||
+            fires[i].sprite.y > app.stage.height || fires[i].sprite.x > app.stage.width) {
             firesForRemoval.push(i);
         }
     }
@@ -257,7 +257,7 @@ function play(delta) {
         }
 
         for (let f = 0; f < fires.length; f++) {
-            if (b.hitTestCircleRectangle(pokeballs[i], fires[f])) {
+            if (b.hitTestCircleRectangle(pokeballs[i], fires[f].sprite)) {
                 firesForRemoval.push(f);
                 hittedPokeballsIndexes.push(i);
 
@@ -324,7 +324,7 @@ function play(delta) {
     for (let f = 0; f < fires.length; f++) {
         for (let r = 0; r < rocks.length; r++) {
 
-            if (b.hitTestRectangle(fires[f], rocks[r])) {
+            if (b.hitTestRectangle(fires[f].sprite, rocks[r])) {
                 firesForRemoval.push(f);
                 if (!rocks[r].hitCounter) {
                     rocks[r].gotoAndStop(++rocks[r].hitCounter);
@@ -345,7 +345,10 @@ function play(delta) {
     }
 
     firesForRemoval.forEach(fire => {
-        mainScene.removeChild(fires[fire]);
+        if(fires[fire] !== undefined) {
+            mainScene.removeChild(fires[fire].sprite);
+        }
+
         fires.splice(fire, 1);
     });
 
@@ -356,52 +359,19 @@ function play(delta) {
         rocks.splice(index, 1);
     });
 
-    healthBar.position.set(fennekin.x - fennekin.width / 2, fennekin.y - 20);
-    // mainScene.pivot.x = fennekin.position.x;
-    // mainScene.pivot.y = fennekin.position.y;
-    mainScene.pivot.x = fennekin.x;
-    mainScene.pivot.y = fennekin.y;
+    healthBar.position.set(fennekin.animatedSprite.x - fennekin.width / 2, fennekin.animatedSprite.y - 20);
+    mainScene.pivot.x = fennekin.animatedSprite.x;
+    mainScene.pivot.y = fennekin.animatedSprite.y;
     mainScene.position.x = app.renderer.width / 2;
     mainScene.position.y = app.renderer.height / 2;
 
     if (fennekin.vx < 0) {
-        fennekin.animatedSprite.gotoAndStop(1);
+        fennekin.changeSpriteByDirection("left");
     } else if (fennekin.vx > 0) {
-        fennekin.animatedSprite.gotoAndStop(0);
+        fennekin.changeSpriteByDirection("right");
     } else if (fennekin.vy > 0) {
-        fennekin.animatedSprite.gotoAndStop(2);
+        fennekin.changeSpriteByDirection("down");
     } else if (fennekin.vy < 0) {
-        fennekin.animatedSprite.gotoAndStop(3);
+        fennekin.changeSpriteByDirection("up");
     }
-}
-
-function shoot() {
-    var fire = new Sprite(field_elems["fire_right.png"]);
-    var rotation = rotateToPoint(app.renderer.plugins.interaction.mouse.global.x,
-        app.renderer.plugins.interaction.mouse.global.y);
-    // fire.position.x = fennekin.position.x + Math.cos(rotation) * 5;
-    // fire.position.y = fennekin.position.y + Math.sin(rotation) * 5;
-    fire.position.x = fennekin.x + Math.cos(rotation) * 5;
-    fire.position.y = fennekin.y + Math.sin(rotation) * 5;
-    fire.anchor.set(0.5, 0.5);
-    fire.rotation = rotation;
-    mainScene.addChild(fire);
-    fires.push(fire);
-}
-
-function rotateToPoint(mouse_x, mouse_y) {
-    var dist_x = mouse_x - mainScene.position.x;
-    var dist_y = mouse_y - mainScene.position.y;
-    var angle = Math.atan2(dist_y, dist_x);
-
-    if (angle > 2.35 || angle < -2.35) {
-        fennekin.animatedSprite.gotoAndStop(1);
-    } else if (angle >= -2.35 && angle < -0.8) {
-        fennekin.animatedSprite.gotoAndStop(3)
-    } else if (angle >= -0.8 && angle < 0.8) {
-        fennekin.animatedSprite.gotoAndStop(0);
-    } else if (angle >= 0.8 && angle < 2.35) {
-        fennekin.animatedSprite.gotoAndStop(2);
-    }
-    return angle;
 }
